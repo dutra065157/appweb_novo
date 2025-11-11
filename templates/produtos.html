@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Catálogo de Produtos - Graça Presentes</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+    <style>
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .product-card {
+            transition: all 0.3s ease;
+        }
+        .product-card:hover {
+            transform: translateY(-5px);
+        }
+    </style>
+</head>
+<body class="text-gray-800 bg-gray-50">
+    <!-- Header -->
+    <header class="bg-white shadow-sm sticky top-0 z-50">
+        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center">
+                <div class="w-12 h-12 rounded-full bg-pink-200 flex items-center justify-center mr-3">
+                    <i data-feather="gift" class="text-pink-500"></i>
+                </div>
+                <h1 class="text-2xl font-bold text-pink-600">Graça Presentes</h1>
+            </div>
+            
+            <nav class="hidden md:block">
+                <ul class="flex space-x-8">
+                    <li><a href="index.html" class="font-medium hover:text-pink-600 transition">Home</a></li>
+                    <li><a href="produtos.html" class="font-medium text-pink-600 transition">Produtos</a></li>
+                    <li><a href="carrinho.html" class="font-medium hover:text-pink-600 transition">Carrinho</a></li>
+                    <li><a href="cadastro.html" class="font-medium hover:text-pink-600 transition">Cadastro</a></li>
+                    <li><a href="login.html" class="font-medium hover:text-pink-600 transition">Login</a></li>
+                </ul>
+            </nav>
+            
+            <div class="flex items-center space-x-4">
+                <button class="p-2 rounded-full hover:bg-pink-100 transition" onclick="window.location.href='login.html'">
+                    <i data-feather="user"></i>
+                </button>
+                <button class="p-2 rounded-full hover:bg-pink-100 transition relative" onclick="window.location.href='carrinho.html'">
+                    <i data-feather="shopping-cart"></i>
+                    <span id="cart-count" class="absolute -top-1 -right-1 bg-pink-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">0</span>
+                </button>
+                <button class="md:hidden p-2 rounded-full hover:bg-pink-100 transition">
+                    <i data-feather="menu"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Product Catalog -->
+    <main class="py-8">
+        <div class="container mx-auto px-4">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8">
+                <h1 class="text-3xl font-bold mb-4 md:mb-0">Nossos Produtos</h1>
+                
+                <div class="w-full md:w-auto flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4">
+                    <div class="relative">
+                        <input type="text" id="search-input" placeholder="Buscar produtos..." class="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-300 focus:border-transparent w-full md:w-64">
+                        <i data-feather="search" class="absolute left-3 top-3 text-gray-400"></i>
+                    </div>
+                    
+                    <div class="relative">
+                        <select id="category-filter" class="appearance-none pl-3 pr-8 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-300 focus:border-transparent w-full md:w-48">
+                            <option value="">Todas Categorias</option>
+                            <option value="Flores">Flores</option>
+                            <option value="Doces">Doces</option>
+                            <option value="Pelúcias">Pelúcias</option>
+                            <option value="Cosméticos">Cosméticos</option>
+                            <option value="Kits">Kits</option>
+                            <option value="Decoração">Decoração</option>
+                            <option value="Joias">Joias</option>
+                        </select>
+                        <i data-feather="chevron-down" class="absolute right-3 top-3 text-gray-400 pointer-events-none"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Loading State -->
+            <div id="loading-state" class="text-center py-12">
+                <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-pink-500 mx-auto mb-4"></div>
+                <p class="text-gray-600">Carregando produtos...</p>
+            </div>
+
+            <!-- Error State -->
+            <div id="error-state" class="text-center py-12 hidden">
+                <i data-feather="alert-triangle" class="w-16 h-16 text-red-500 mx-auto mb-4"></i>
+                <h3 class="text-xl font-bold text-gray-800 mb-2">Erro ao carregar produtos</h3>
+                <p class="text-gray-600 mb-4" id="error-message"></p>
+                <button onclick="carregarProdutos()" class="bg-pink-500 hover:bg-pink-600 text-white px-6 py-2 rounded-lg transition">
+                    Tentar Novamente
+                </button>
+            </div>
+            
+            <!-- Products Grid -->
+            <div id="products-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 hidden">
+                <!-- Produtos serão carregados via JavaScript -->
+            </div>
+
+            <!-- Empty State -->
+            <div id="empty-state" class="text-center py-12 hidden">
+                <i data-feather="package" class="w-16 h-16 text-gray-300 mx-auto mb-4"></i>
+                <h3 class="text-xl font-bold text-gray-600 mb-2">Nenhum produto encontrado</h3>
+                <p class="text-gray-500">Tente ajustar os filtros ou buscar por outros termos.</p>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-12">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div>
+                    <div class="flex items-center mb-4">
+                        <div class="w-10 h-10 rounded-full bg-pink-500 flex items-center justify-center mr-3">
+                            <i data-feather="gift" class="text-white"></i>
+                        </div>
+                        <h3 class="text-xl font-bold">Graça Presentes</h3>
+                    </div>
+                    <p class="text-gray-300">Presentes especiais para momentos inesquecíveis desde 2010.</p>
+                    <div class="flex space-x-4 mt-4">
+                        <a href="#" class="text-gray-300 hover:text-white transition"><i data-feather="facebook"></i></a>
+                        <a href="#" class="text-gray-300 hover:text-white transition"><i data-feather="instagram"></i></a>
+                        <a href="#" class="text-gray-300 hover:text-white transition"><i data-feather="twitter"></i></a>
+                    </div>
+                </div>
+                
+                <div>
+                    <h4 class="font-bold text-lg mb-4">Links Úteis</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-300 hover:text-white transition">Sobre Nós</a></li>
+                        <li><a href="#" class="text-gray-300 hover:text-white transition">Blog</a></li>
+                        <li><a href="#" class="text-gray-300 hover:text-white transition">Termos de Serviço</a></li>
+                        <li><a href="#" class="text-gray-300 hover:text-white transition">Política de Privacidade</a></li>
+                        <li><a href="#" class="text-gray-300 hover:text-white transition">Trocas e Devoluções</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="font-bold text-lg mb-4">Minha Conta</h4>
+                    <ul class="space-y-2">
+                        <li><a href="cadastro.html" class="text-gray-300 hover:text-white transition">Minha Conta</a></li>
+                        <li><a href="#" class="text-gray-300 hover:text-white transition">Meus Pedidos</a></li>
+                        <li><a href="#" class="text-gray-300 hover:text-white transition">Lista de Desejos</a></li>
+                        <li><a href="#" class="text-gray-300 hover:text-white transition">Newsletter</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="font-bold text-lg mb-4">Contato</h4>
+                    <ul class="space-y-2">
+                        <li class="flex items-center">
+                            <i data-feather="map-pin" class="mr-2 w-4 h-4"></i>
+                            <span class="text-gray-300">Rua das Flores, 123 - São Paulo/SP</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i data-feather="phone" class="mr-2 w-4 h-4"></i>
+                            <span class="text-gray-300">(11) 9876-5432</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i data-feather="mail" class="mr-2 w-4 h-4"></i>
+                            <span class="text-gray-300">contato@gracapresentes.com.br</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-700 mt-12 pt-8 text-center text-gray-400">
+                <p>&copy; 2024 Graça Presentes. Todos os direitos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Classe Carrinho
+        class Carrinho {
+            constructor() {
+                this.itens = JSON.parse(localStorage.getItem('carrinho')) || [];
+                this.desconto = 0;
+                this.atualizarContador();
+            }
+
+            adicionarItem(produto) {
+                const itemExistente = this.itens.find(item => item.id === produto.id);
+                
+                if (itemExistente) {
+                    itemExistente.quantidade += 1;
+                } else {
+                    this.itens.push({
+                        ...produto,
+                        quantidade: 1
+                    });
+                }
+                
+                this.salvar();
+                this.atualizarContador();
+                this.mostrarFeedback(produto.nome);
+            }
+
+            removerItem(id) {
+                this.itens = this.itens.filter(item => item.id !== id);
+                this.salvar();
+                this.atualizarContador();
+            }
+
+            atualizarQuantidade(id, quantidade) {
+                const item = this.itens.find(item => item.id === id);
+                if (item) {
+                    item.quantidade = quantidade;
+                    if (item.quantidade <= 0) {
+                        this.removerItem(id);
+                    } else {
+                        this.salvar();
+                    }
+                }
+                this.atualizarContador();
+            }
+
+            atualizarContador() {
+                const contadores = document.querySelectorAll('#cart-count');
+                const totalItens = this.itens.reduce((total, item) => total + item.quantidade, 0);
+                
+                contadores.forEach(contador => {
+                    contador.textContent = totalItens;
+                });
+            }
+
+            mostrarFeedback(nomeProduto) {
+                // Remover feedback anterior se existir
+                const feedbackAnterior = document.querySelector('.cart-feedback');
+                if (feedbackAnterior) {
+                    feedbackAnterior.remove();
+                }
+
+                const feedback = document.createElement('div');
+                feedback.className = 'cart-feedback fixed top-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-50 animate-bounce';
+                feedback.innerHTML = `
+                    <div class="flex items-center">
+                        <i data-feather="check-circle" class="w-5 h-5 mr-2"></i>
+                        <span><strong>${nomeProduto}</strong> adicionado ao carrinho!</span>
+                    </div>
+                `;
+                
+                document.body.appendChild(feedback);
+                feather.replace();
+                
+                setTimeout(() => {
+                    feedback.remove();
+                }, 3000);
+            }
+
+            getTotal() {
+                return this.itens.reduce((total, item) => total + (item.preco * item.quantidade), 0);
+            }
+
+            salvar() {
+                localStorage.setItem('carrinho', JSON.stringify(this.itens));
+            }
+
+            limpar() {
+                this.itens = [];
+                this.desconto = 0;
+                this.salvar();
+                this.atualizarContador();
+            }
+        }
+
+        // Inicializar carrinho
+        const carrinho = new Carrinho();
+
+        // Array para armazenar produtos
+        let produtos = [];
+
+        document.addEventListener('DOMContentLoaded', function() {
+            carregarProdutos();
+            atualizarContadorCarrinho();
+            feather.replace();
+            
+            // Filtros
+            document.getElementById('search-input').addEventListener('input', filtrarProdutos);
+            document.getElementById('category-filter').addEventListener('change', filtrarProdutos);
+        });
+
+        function atualizarContadorCarrinho() {
+            carrinho.atualizarContador();
+        }
+
+        // Carregar produtos do backend
+        async function carregarProdutos() {
+            const loadingState = document.getElementById('loading-state');
+            const errorState = document.getElementById('error-state');
+            const productsGrid = document.getElementById('products-grid');
+            const emptyState = document.getElementById('empty-state');
+
+            // Mostrar loading
+            loadingState.classList.remove('hidden');
+            errorState.classList.add('hidden');
+            productsGrid.classList.add('hidden');
+            emptyState.classList.add('hidden');
+
+            try {
+                const response = await fetch('/api/produtos');
+                
+                if (!response.ok) {
+                    throw new Error(`Erro ${response.status}: ${response.statusText}`);
+                }
+                
+                produtos = await response.json();
+                
+                // Esconder loading
+                loadingState.classList.add('hidden');
+                
+                if (produtos.length === 0) {
+                    emptyState.classList.remove('hidden');
+                } else {
+                    productsGrid.classList.remove('hidden');
+                    renderizarProdutos(produtos);
+                }
+                
+            } catch (error) {
+                console.error('Erro ao carregar produtos:', error);
+                
+                loadingState.classList.add('hidden');
+                errorState.classList.remove('hidden');
+                document.getElementById('error-message').textContent = error.message;
+            }
+        }
+
+        function renderizarProdutos(produtosParaRenderizar) {
+            const container = document.getElementById('products-grid');
+            
+            container.innerHTML = produtosParaRenderizar.map(produto => {
+                // Determinar badges baseado nas propriedades
+                const badges = [];
+                let badgePosition = 3;
+                
+                if (produto.desconto && produto.desconto > 0) {
+                    badges.push(`<div class="absolute top-3 right-3 bg-pink-500 text-white text-xs px-2 py-1 rounded-full font-semibold">-${produto.desconto}%</div>`);
+                }
+                if (produto.novo) {
+                    const rightPosition = badgePosition * 12;
+                    badges.push(`<div class="absolute top-3 right-${badgePosition * 12} bg-green-500 text-white text-xs px-2 py-1 rounded-full font-semibold">Novo</div>`);
+                    badgePosition++;
+                }
+                if (produto.maisVendido) {
+                    const rightPosition = badgePosition * 12;
+                    badges.push(`<div class="absolute top-3 right-${badgePosition * 12} bg-orange-500 text-white text-xs px-2 py-1 rounded-full font-semibold">Mais Vendido</div>`);
+                }
+
+                // Calcular preço com desconto se aplicável
+                const precoFinal = produto.desconto && produto.desconto > 0 
+                    ? produto.preco * (1 - produto.desconto / 100)
+                    : produto.preco;
+
+                // Mapear cores para classes Tailwind seguras
+                const corMap = {
+                    'pink': 'pink',
+                    'yellow': 'yellow', 
+                    'blue': 'blue',
+                    'purple': 'purple',
+                    'brown': 'amber',
+                    'gray': 'gray',
+                    'green': 'green',
+                    'red': 'red'
+                };
+                
+                const corClasse = corMap[produto.cor] || 'gray';
+
+                return `
+                <div class="product-card bg-white rounded-xl overflow-hidden shadow-md hover:shadow-lg transition-all duration-300 fade-in" 
+                     data-categoria="${produto.categoria}" 
+                     data-nome="${produto.nome.toLowerCase()}">
+                    <div class="relative">
+                        <div class="w-full h-48 bg-gradient-to-br ${produto.corGradiente || 'from-gray-400 to-gray-600'} flex items-center justify-center">
+                            <i data-feather="${produto.icone || 'package'}" class="w-16 h-16 text-white"></i>
+                        </div>
+                        ${badges.join('')}
+                    </div>
+                    
+                    <div class="p-4">
+                        <div class="flex justify-between items-start mb-2">
+                            <h3 class="font-semibold text-lg text-gray-800">${produto.nome}</h3>
+                            <span class="bg-${corClasse}-100 text-${corClasse}-600 text-xs px-2 py-1 rounded font-medium">${produto.categoria}</span>
+                        </div>
+                        
+                        <p class="text-gray-600 text-sm mb-4 leading-relaxed">${produto.descricao || 'Produto de alta qualidade'}</p>
+                        
+                        <div class="flex justify-between items-center">
+                            <div class="flex flex-col">
+                                <span class="font-bold text-lg text-pink-500">R$ ${precoFinal.toFixed(2).replace('.', ',')}</span>
+                                ${produto.precoOriginal && produto.precoOriginal > precoFinal ? 
+                                    `<span class="text-xs text-gray-400 line-through">De: R$ ${produto.precoOriginal.toFixed(2).replace('.', ',')}</span>` : 
+                                    ''}
+                            </div>
+                            <button class="add-to-cart-btn bg-pink-500 hover:bg-pink-600 text-white px-4 py-2 rounded-lg transition flex items-center space-x-2 font-medium"
+                                    data-produto-id="${produto.id}"
+                                    title="Adicionar ao carrinho">
+                                <i data-feather="shopping-cart" class="w-4 h-4"></i>
+                                <span>Adicionar</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                `;
+            }).join('');
+            
+            // Atualizar ícones do Feather
+            feather.replace();
+            
+            // Adicionar eventos aos botões de adicionar ao carrinho
+            document.querySelectorAll('.add-to-cart-btn').forEach(button => {
+                button.addEventListener('click', function() {
+                    const produtoId = parseInt(this.getAttribute('data-produto-id'));
+                    const produto = produtos.find(p => p.id === produtoId);
+                    if (produto) {
+                        carrinho.adicionarItem(produto);
+                        
+                        // Efeito visual no botão
+                        this.innerHTML = '<i data-feather="check" class="w-4 h-4"></i><span>Adicionado!</span>';
+                        this.classList.remove('bg-pink-500', 'hover:bg-pink-600');
+                        this.classList.add('bg-green-500');
+                        feather.replace();
+                        
+                        setTimeout(() => {
+                            this.innerHTML = '<i data-feather="shopping-cart" class="w-4 h-4"></i><span>Adicionar</span>';
+                            this.classList.remove('bg-green-500');
+                            this.classList.add('bg-pink-500', 'hover:bg-pink-600');
+                            feather.replace();
+                        }, 2000);
+                    }
+                });
+            });
+        }
+
+        function filtrarProdutos() {
+            const termoBusca = document.getElementById('search-input').value.toLowerCase();
+            const categoriaSelecionada = document.getElementById('category-filter').value;
+            
+            const produtosFiltrados = produtos.filter(produto => {
+                const correspondeBusca = produto.nome.toLowerCase().includes(termoBusca) ||
+                                       (produto.descricao && produto.descricao.toLowerCase().includes(termoBusca)) ||
+                                       produto.categoria.toLowerCase().includes(termoBusca);
+                
+                const correspondeCategoria = !categoriaSelecionada || produto.categoria === categoriaSelecionada;
+                
+                return correspondeBusca && correspondeCategoria;
+            });
+            
+            const container = document.getElementById('products-grid');
+            const emptyState = document.getElementById('empty-state');
+            
+            if (produtosFiltrados.length === 0) {
+                container.classList.add('hidden');
+                emptyState.classList.remove('hidden');
+            } else {
+                container.classList.remove('hidden');
+                emptyState.classList.add('hidden');
+                renderizarProdutos(produtosFiltrados);
+            }
+        }
+    </script>
+</body>
+</html>

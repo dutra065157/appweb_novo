@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel do Vendedor - Graça Presentes</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+    <style>
+        /* Personalização adicional do Tailwind com cores rosa */
+        .bg-rosa-50 { background-color: #fdf2f8; }
+        .bg-rosa-100 { background-color: #fce7f3; }
+        .bg-rosa-500 { background-color: #ec4899; }
+        .bg-rosa-600 { background-color: #db2777; }
+        .text-rosa-500 { color: #ec4899; }
+        .text-rosa-600 { color: #db2777; }
+        .border-rosa-200 { border-color: #fbcfe8; }
+        .gradient-rosa { background: linear-gradient(135deg, #ec4899 0%, #f472b6 100%); }
+        
+        /* Animações suaves */
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px -5px rgba(236, 72, 153, 0.1), 0 10px 10px -5px rgba(236, 72, 153, 0.04);
+        }
+        
+        /* Status badges com cores diferentes */
+        .status-recebido { background-color: #dbeafe; color: #1e40af; }
+        .status-preparando { background-color: #fef3c7; color: #92400e; }
+        .status-enviado { background-color: #d1fae5; color: #065f46; }
+        .status-entregue { background-color: #f3f4f6; color: #374151; }
+        .status-cancelado { background-color: #fee2e2; color: #991b1b; }
+    </style>
+</head>
+<body class="bg-rosa-50">
+    <div class="min-h-screen">
+        <!-- Header -->
+        <header class="bg-white shadow-sm border-b border-rosa-200">
+            <div class="container mx-auto px-4 py-4">
+                <div class="flex justify-between items-center">
+                    <div class="flex items-center">
+                        <div class="w-10 h-10 gradient-rosa rounded-full flex items-center justify-center mr-3">
+                            <i data-feather="shopping-bag" class="text-white"></i>
+                        </div>
+                        <h1 class="text-2xl font-bold text-gray-800">Painel do Vendedor</h1>
+                    </div>
+                    <div class="text-sm text-gray-600">
+                        <span id="current-time"></span>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="container mx-auto px-4 py-8">
+            <!-- Cards de Estatísticas -->
+            <div class="grid grid-cols-1 lg:grid-cols-4 gap-6 mb-8">
+                <div class="bg-white rounded-xl p-6 shadow-sm border border-rosa-200 card-hover">
+                    <div class="flex items-center">
+                        <div class="w-12 h-12 bg-rosa-100 rounded-lg flex items-center justify-center mr-4">
+                            <i data-feather="shopping-cart" class="w-6 h-6 text-rosa-500"></i>
+                        </div>
+                        <div>
+                            <div class="text-2xl font-bold text-gray-800" id="total-pedidos">0</div>
+                            <div class="text-sm text-gray-600">Total de Pedidos</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-xl p-6 shadow-sm border border-rosa-200 card-hover">
+                    <div class="flex items-center">
+                        <div class="w-12 h-12 bg-rosa-100 rounded-lg flex items-center justify-center mr-4">
+                            <i data-feather="clock" class="w-6 h-6 text-rosa-500"></i>
+                        </div>
+                        <div>
+                            <div class="text-2xl font-bold text-gray-800" id="pedidos-pendentes">0</div>
+                            <div class="text-sm text-gray-600">Pendentes</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-xl p-6 shadow-sm border border-rosa-200 card-hover">
+                    <div class="flex items-center">
+                        <div class="w-12 h-12 bg-rosa-100 rounded-lg flex items-center justify-center mr-4">
+                            <i data-feather="dollar-sign" class="w-6 h-6 text-rosa-500"></i>
+                        </div>
+                        <div>
+                            <div class="text-2xl font-bold text-gray-800" id="total-vendas">R$ 0</div>
+                            <div class="text-sm text-gray-600">Total em Vendas</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-xl p-6 shadow-sm border border-rosa-200 card-hover">
+                    <div class="flex items-center">
+                        <div class="w-12 h-12 bg-rosa-100 rounded-lg flex items-center justify-center mr-4">
+                            <i data-feather="message-circle" class="w-6 h-6 text-rosa-500"></i>
+                        </div>
+                        <div>
+                            <div class="text-2xl font-bold text-gray-800" id="whatsapp-pedidos">0</div>
+                            <div class="text-sm text-gray-600">Via WhatsApp</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Filtros e Busca -->
+            <div class="bg-white rounded-xl shadow-sm border border-rosa-200 mb-6">
+                <div class="px-6 py-4 border-b border-rosa-200">
+                    <div class="flex flex-col md:flex-row md:items-center md:justify-between">
+                        <h2 class="text-xl font-semibold text-gray-800 mb-4 md:mb-0">Últimos Pedidos</h2>
+                        <div class="flex flex-col sm:flex-row gap-3">
+                            <select id="filtro-status" class="px-4 py-2 border border-rosa-200 rounded-lg focus:ring-2 focus:ring-rosa-500 focus:border-rosa-500">
+                                <option value="todos">Todos os status</option>
+                                <option value="recebido">Recebido</option>
+                                <option value="preparando">Preparando</option>
+                                <option value="enviado">Enviado</option>
+                                <option value="entregue">Entregue</option>
+                                <option value="cancelado">Cancelado</option>
+                            </select>
+                            <div class="relative">
+                                <input type="text" id="busca-pedido" placeholder="Buscar pedido..." class="pl-10 pr-4 py-2 border border-rosa-200 rounded-lg focus:ring-2 focus:ring-rosa-500 focus:border-rosa-500 w-full">
+                                <i data-feather="search" class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Lista de Pedidos -->
+                <div class="p-6">
+                    <div id="loading-pedidos" class="text-center py-8">
+                        <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-rosa-500 mx-auto mb-2"></div>
+                        <p class="text-gray-600">Carregando pedidos...</p>
+                    </div>
+                    <div id="lista-pedidos" class="space-y-4 hidden">
+                        <!-- Pedidos serão carregados aqui -->
+                    </div>
+                    <div id="sem-pedidos" class="text-center py-8 hidden">
+                        <i data-feather="package" class="w-16 h-16 text-gray-300 mx-auto mb-4"></i>
+                        <h3 class="text-lg font-semibold text-gray-600 mb-2">Nenhum pedido encontrado</h3>
+                        <p class="text-gray-500">Os pedidos aparecerão aqui quando os clientes fizerem compras.</p>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modal de Detalhes do Pedido -->
+    <div id="modal-detalhes" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50 hidden">
+        <div class="bg-white rounded-xl shadow-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center p-6 border-b border-rosa-200">
+                <h3 class="text-xl font-semibold text-gray-800">Detalhes do Pedido</h3>
+                <button id="fechar-modal" class="text-gray-400 hover:text-gray-600">
+                    <i data-feather="x" class="w-6 h-6"></i>
+                </button>
+            </div>
+            <div class="p-6" id="conteudo-modal">
+                <!-- Conteúdo do modal será preenchido via JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Dados de exemplo
+        let todosPedidos = [];
+        let pedidosFiltrados = [];
+
+        // Atualizar hora atual
+        function atualizarHora() {
+            const now = new Date();
+            document.getElementById('current-time').textContent = 
+                now.toLocaleDateString('pt-BR') + ' ' + now.toLocaleTimeString('pt-BR');
+        }
+        setInterval(atualizarHora, 1000);
+        atualizarHora();
+
+        // Carregar pedidos
+        async function carregarPedidos() {
+            const loading = document.getElementById('loading-pedidos');
+            const lista = document.getElementById('lista-pedidos');
+            const semPedidos = document.getElementById('sem-pedidos');
+
+            try {
+                // Simular carregamento de pedidos do banco
+                setTimeout(() => {
+                    loading.classList.add('hidden');
+                    
+                    // Dados de exemplo - em produção viriam do banco
+                    todosPedidos = [
+                        {
+                            id: 1001,
+                            cliente: { 
+                                nome: 'Ana Silva', 
+                                telefone: '11999999999',
+                                email: 'ana.silva@email.com',
+                                endereco: 'Rua das Flores, 123 - Jardim Primavera, São Paulo - SP, 01234-567'
+                            },
+                            total: 149.90,
+                            data: '2024-01-15 14:30:00',
+                            status: 'recebido',
+                            metodoPagamento: 'Cartão de Crédito',
+                            observacoes: 'Embalagem para presente',
+                            itens: [
+                                { nome: 'Buquê de Rosas Vermelhas', quantidade: 1, preco: 89.90 },
+                                { nome: 'Caixa de Chocolates Finos', quantidade: 1, preco: 59.90 }
+                            ]
+                        },
+                        {
+                            id: 1002,
+                            cliente: { 
+                                nome: 'Carlos Oliveira', 
+                                telefone: '11988888888',
+                                email: 'carlos.oliveira@email.com',
+                                endereco: 'Av. Paulista, 1000 - Bela Vista, São Paulo - SP, 01310-100'
+                            },
+                            total: 89.90,
+                            data: '2024-01-15 10:15:00',
+                            status: 'preparando',
+                            metodoPagamento: 'PIX',
+                            observacoes: 'Entregar antes das 12h',
+                            itens: [
+                                { nome: 'Cesta de Café da Manhã', quantidade: 1, preco: 89.90 }
+                            ]
+                        },
+                        {
+                            id: 1003,
+                            cliente: { 
+                                nome: 'Mariana Santos', 
+                                telefone: '11977777777',
+                                email: 'mariana.santos@email.com',
+                                endereco: 'Rua Augusta, 500 - Consolação, São Paulo - SP, 01304-000'
+                            },
+                            total: 199.80,
+                            data: '2024-01-14 16:45:00',
+                            status: 'enviado',
+                            metodoPagamento: 'Cartão de Débito',
+                            observacoes: '',
+                            itens: [
+                                { nome: 'Buquê de Rosas Vermelhas', quantidade: 1, preco: 89.90 },
+                                { nome: 'Urso de Pelúcia Grande', quantidade: 1, preco: 59.90 },
+                                { nome: 'Cartão Personalizado', quantidade: 1, preco: 10.00 }
+                            ]
+                        },
+                        {
+                            id: 1004,
+                            cliente: { 
+                                nome: 'Roberto Almeida', 
+                                telefone: '11966666666',
+                                email: 'roberto.almeida@email.com',
+                                endereco: 'Rua da Consolação, 2000 - Cerqueira César, São Paulo - SP, 01301-000'
+                            },
+                            total: 249.70,
+                            data: '2024-01-13 09:20:00',
+                            status: 'entregue',
+                            metodoPagamento: 'Dinheiro',
+                            observacoes: 'Presente de aniversário',
+                            itens: [
+                                { nome: 'Arranjo de Flores Orquídeas', quantidade: 1, preco: 129.90 },
+                                { nome: 'Vinho Tinto Reserva', quantidade: 1, preco: 79.90 },
+                                { nome: 'Taças de Cristal', quantidade: 2, preco: 39.90 }
+                            ]
+                        }
+                    ];
+
+                    pedidosFiltrados = [...todosPedidos];
+
+                    if (todosPedidos.length === 0) {
+                        semPedidos.classList.remove('hidden');
+                    } else {
+                        lista.classList.remove('hidden');
+                        renderizarPedidos(pedidosFiltrados);
+                        atualizarEstatisticas(todosPedidos);
+                    }
+                }, 1500);
+
+            } catch (error) {
+                console.error('Erro ao carregar pedidos:', error);
+                loading.classList.add('hidden');
+                semPedidos.classList.remove('hidden');
+            }
+        }
+
+        function renderizarPedidos(pedidos) {
+            const container = document.getElementById('lista-pedidos');
+            
+            container.innerHTML = pedidos.map(pedido => {
+                // Definir cor do status baseado no estado
+                let statusClass = '';
+                let statusIcon = '';
+                
+                switch(pedido.status) {
+                    case 'recebido':
+                        statusClass = 'status-recebido';
+                        statusIcon = 'clock';
+                        break;
+                    case 'preparando':
+                        statusClass = 'status-preparando';
+                        statusIcon = 'package';
+                        break;
+                    case 'enviado':
+                        statusClass = 'status-enviado';
+                        statusIcon = 'truck';
+                        break;
+                    case 'entregue':
+                        statusClass = 'status-entregue';
+                        statusIcon = 'check-circle';
+                        break;
+                    case 'cancelado':
+                        statusClass = 'status-cancelado';
+                        statusIcon = 'x-circle';
+                        break;
+                    default:
+                        statusClass = 'status-recebido';
+                        statusIcon = 'help-circle';
+                }
+                
+                return `
+                <div class="border border-rosa-200 rounded-lg p-4 card-hover">
+                    <div class="flex justify-between items-start mb-3">
+                        <div>
+                            <h3 class="font-semibold text-lg text-gray-800">Pedido #${pedido.id}</h3>
+                            <p class="text-gray-600">${pedido.cliente.nome} • ${pedido.cliente.telefone}</p>
+                        </div>
+                        <div class="text-right">
+                            <div class="font-bold text-rosa-500">R$ ${pedido.total.toFixed(2)}</div>
+                            <div class="text-sm text-gray-500">${new Date(pedido.data).toLocaleDateString('pt-BR')}</div>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${statusClass}">
+                            <i data-feather="${statusIcon}" class="w-3 h-3 mr-1"></i>
+                            ${pedido.status.charAt(0).toUpperCase() + pedido.status.slice(1)}
+                        </span>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <h4 class="font-medium text-gray-700 mb-2">Itens do Pedido:</h4>
+                        ${pedido.itens.map(item => `
+                            <div class="flex justify-between text-sm text-gray-600 mb-1">
+                                <span>${item.quantidade}x ${item.nome}</span>
+                                <span>R$ ${item.preco.toFixed(2)}</span>
+                            </div>
+                        `).join('')}
+                    </div>
+                    
+                    <div class="flex flex-col sm:flex-row gap-2">
+                        <button onclick="abrirWhatsApp('${pedido.cliente.telefone}', ${pedido.id})" 
+                                class="flex-1 bg-green-500 hover:bg-green-600 text-white py-2 px-4 rounded-lg font-medium transition flex items-center justify-center">
+                            <i data-feather="message-circle" class="w-4 h-4 mr-2"></i>
+                            WhatsApp
+                        </button>
+                        <button onclick="detalhesPedido(${pedido.id})" 
+                                class="flex-1 border border-rosa-500 text-rosa-500 hover:bg-rosa-50 py-2 px-4 rounded-lg font-medium transition flex items-center justify-center">
+                            <i data-feather="eye" class="w-4 h-4 mr-2"></i>
+                            Detalhes
+                        </button>
+                        <button onclick="alterarStatus(${pedido.id})" 
+                                class="flex-1 border border-gray-300 text-gray-700 hover:bg-gray-50 py-2 px-4 rounded-lg font-medium transition flex items-center justify-center">
+                            <i data-feather="edit" class="w-4 h-4 mr-2"></i>
+                            Status
+                        </button>
+                    </div>
+                </div>
+                `;
+            }).join('');
+
+            feather.replace();
+        }
+
+        function atualizarEstatisticas(pedidos) {
+            document.getElementById('total-pedidos').textContent = pedidos.length;
+            document.getElementById('pedidos-pendentes').textContent = 
+                pedidos.filter(p => p.status === 'recebido' || p.status === 'preparando').length;
+            
+            const totalVendas = pedidos.reduce((sum, pedido) => sum + pedido.total, 0);
+            document.getElementById('total-vendas').textContent = `R$ ${totalVendas.toFixed(2)}`;
+            
+            // Simulação: contar pedidos com telefone (todos no exemplo)
+            document.getElementById('whatsapp-pedidos').textContent = 
+                pedidos.filter(p => p.cliente.telefone).length;
+        }
+
+        function abrirWhatsApp(telefone, pedidoId) {
+            const mensagem = `Olá! Sou da Graça Presentes. Gostaria de confirmar os detalhes do Pedido #${pedidoId}. Podemos conversar?`;
+            const mensagemCodificada = encodeURIComponent(mensagem);
+            const linkWhatsApp = `https://api.whatsapp.com/send?phone=55${telefone}&text=${mensagemCodificada}`;
+            
+            window.open(linkWhatsApp, '_blank');
+        }
+
+        function detalhesPedido(pedidoId) {
+            const pedido = todosPedidos.find(p => p.id === pedidoId);
+            if (!pedido) return;
+            
+            const modal = document.getElementById('modal-detalhes');
+            const conteudo = document.getElementById('conteudo-modal');
+            
+            conteudo.innerHTML = `
+                <div class="space-y-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <h4 class="font-semibold text-gray-700 mb-2">Informações do Pedido</h4>
+                            <div class="space-y-2 text-sm">
+                                <div class="flex justify-between">
+                                    <span class="text-gray-600">Número do Pedido:</span>
+                                    <span class="font-medium">#${pedido.id}</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-gray-600">Data:</span>
+                                    <span class="font-medium">${new Date(pedido.data).toLocaleString('pt-BR')}</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-gray-600">Status:</span>
+                                    <span class="font-medium capitalize">${pedido.status}</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-gray-600">Método de Pagamento:</span>
+                                    <span class="font-medium">${pedido.metodoPagamento}</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-gray-600">Total:</span>
+                                    <span class="font-medium text-rosa-500">R$ ${pedido.total.toFixed(2)}</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <h4 class="font-semibold text-gray-700 mb-2">Informações do Cliente</h4>
+                            <div class="space-y-2 text-sm">
+                                <div>
+                                    <span class="text-gray-600">Nome:</span>
+                                    <p class="font-medium">${pedido.cliente.nome}</p>
+                                </div>
+                                <div>
+                                    <span class="text-gray-600">Telefone:</span>
+                                    <p class="font-medium">${pedido.cliente.telefone}</p>
+                                </div>
+                                <div>
+                                    <span class="text-gray-600">E-mail:</span>
+                                    <p class="font-medium">${pedido.cliente.email}</p>
+                                </div>
+                                <div>
+                                    <span class="text-gray-600">Endereço:</span>
+                                    <p class="font-medium">${pedido.cliente.endereco}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <h4 class="font-semibold text-gray-700 mb-2">Itens do Pedido</h4>
+                        <div class="border border-rosa-200 rounded-lg overflow-hidden">
+                            <table class="min-w-full divide-y divide-rosa-200">
+                                <thead class="bg-rosa-50">
+                                    <tr>
+                                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Item</th>
+                                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Quantidade</th>
+                                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Preço Unitário</th>
+                                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Subtotal</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="bg-white divide-y divide-rosa-200">
+                                    ${pedido.itens.map(item => `
+                                        <tr>
+                                            <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-800">${item.nome}</td>
+                                            <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-800">${item.quantidade}</td>
+                                            <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-800">R$ ${item.preco.toFixed(2)}</td>
+                                            <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-800">R$ ${(item.quantidade * item.preco).toFixed(2)}</td>
+                                        </tr>
+                                    `).join('')}
+                                </tbody>
+                                <tfoot class="bg-rosa-50">
+                                    <tr>
+                                        <td colspan="3" class="px-4 py-3 text-right text-sm font-medium text-gray-700">Total:</td>
+                                        <td class="px-4 py-3 whitespace-nowrap text-sm font-bold text-rosa-500">R$ ${pedido.total.toFixed(2)}</td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+                    
+                    ${pedido.observacoes ? `
+                    <div>
+                        <h4 class="font-semibold text-gray-700 mb-2">Observações</h4>
+                        <p class="text-sm text-gray-600 bg-rosa-50 p-3 rounded-lg">${pedido.observacoes}</p>
+                    </div>
+                    ` : ''}
+                </div>
+            `;
+            
+            modal.classList.remove('hidden');
+            feather.replace();
+        }
+
+        function alterarStatus(pedidoId) {
+            const pedido = todosPedidos.find(p => p.id === pedidoId);
+            if (!pedido) return;
+            
+            const novoStatus = prompt(
+                `Alterar status do Pedido #${pedidoId}\n\nStatus atual: ${pedido.status}\n\nNovos status disponíveis:\n- recebido\n- preparando\n- enviado\n- entregue\n- cancelado\n\nDigite o novo status:`,
+                pedido.status
+            );
+            
+            if (novoStatus && ['recebido', 'preparando', 'enviado', 'entregue', 'cancelado'].includes(novoStatus.toLowerCase())) {
+                // Em uma aplicação real, aqui faria uma requisição para atualizar no banco
+                pedido.status = novoStatus.toLowerCase();
+                renderizarPedidos(pedidosFiltrados);
+                atualizarEstatisticas(todosPedidos);
+                
+                // Feedback visual
+                alert(`Status do Pedido #${pedidoId} atualizado para: ${novoStatus}`);
+            } else if (novoStatus) {
+                alert('Status inválido. Use apenas: recebido, preparando, enviado, entregue ou cancelado.');
+            }
+        }
+
+        // Filtros e busca
+        function aplicarFiltros() {
+            const filtroStatus = document.getElementById('filtro-status').value;
+            const busca = document.getElementById('busca-pedido').value.toLowerCase();
+            
+            pedidosFiltrados = todosPedidos.filter(pedido => {
+                // Filtro por status
+                const statusMatch = filtroStatus === 'todos' || pedido.status === filtroStatus;
+                
+                // Filtro por busca
+                const buscaMatch = 
+                    pedido.id.toString().includes(busca) ||
+                    pedido.cliente.nome.toLowerCase().includes(busca) ||
+                    pedido.cliente.telefone.includes(busca);
+                
+                return statusMatch && buscaMatch;
+            });
+            
+            renderizarPedidos(pedidosFiltrados);
+            
+            // Mostrar mensagem se não houver resultados
+            const lista = document.getElementById('lista-pedidos');
+            const semPedidos = document.getElementById('sem-pedidos');
+            
+            if (pedidosFiltrados.length === 0 && todosPedidos.length > 0) {
+                lista.classList.add('hidden');
+                semPedidos.classList.remove('hidden');
+                semPedidos.innerHTML = `
+                    <i data-feather="search" class="w-16 h-16 text-gray-300 mx-auto mb-4"></i>
+                    <h3 class="text-lg font-semibold text-gray-600 mb-2">Nenhum pedido encontrado</h3>
+                    <p class="text-gray-500">Tente ajustar os filtros ou termos de busca.</p>
+                `;
+                feather.replace();
+            } else if (pedidosFiltrados.length > 0) {
+                lista.classList.remove('hidden');
+                semPedidos.classList.add('hidden');
+            }
+        }
+
+        // Inicializar
+        document.addEventListener('DOMContentLoaded', function() {
+            carregarPedidos();
+            feather.replace();
+            
+            // Event listeners para filtros
+            document.getElementById('filtro-status').addEventListener('change', aplicarFiltros);
+            document.getElementById('busca-pedido').addEventListener('input', aplicarFiltros);
+            
+            // Fechar modal
+            document.getElementById('fechar-modal').addEventListener('click', function() {
+                document.getElementById('modal-detalhes').classList.add('hidden');
+            });
+            
+            // Fechar modal ao clicar fora
+            document.getElementById('modal-detalhes').addEventListener('click', function(e) {
+                if (e.target === this) {
+                    this.classList.add('hidden');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

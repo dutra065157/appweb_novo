@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Graça Presentes - Presentes Especiais para Momentos Inesquecíveis</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+    <link rel="stylesheet" href="styles/style.css">
+</head>
+<body class="text-gray-800">
+    <!-- Header -->
+    <header class="gradient-bg shadow-sm sticky top-0 z-50">
+        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center">
+                <div class="w-12 h-12 rounded-full bg-pink-200 flex items-center justify-center mr-3">
+                    <i data-feather="gift" class="text-pink-500"></i>
+                </div>
+                <h1 class="text-2xl font-bold text-pink-600">Graça Presentes</h1>
+            </div>
+            
+            <nav class="hidden md:block">
+                <ul class="flex space-x-8">
+                    <li><a href="index.html" class="nav-link font-medium text-pink-600 transition">Home</a></li>
+                    <li><a href="produtos.html" class="nav-link font-medium hover:text-pink-600 transition">Produtos</a></li>
+                    <li><a href="carrinho.html" class="nav-link font-medium hover:text-pink-600 transition">Carrinho</a></li>
+                    <li><a href="cadastro.html" class="nav-link font-medium hover:text-pink-600 transition">Cadastro</a></li>
+                    <li><a href="login.html" class="font-medium hover:text-pink-600 transition">Login</a></li>
+                    <!-- BOTÃO ADMIN ADICIONADO -->
+                    <li>
+                        <button onclick="window.location.href='admin.html'" 
+                                class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg font-medium transition shadow-md flex items-center">
+                            <i data-feather="settings" class="w-4 h-4 mr-2"></i>
+                            Painel Admin
+                        </button>
+                    </li>
+                </ul>
+            </nav>
+            
+            <div class="flex items-center space-x-4">
+                <button class="p-2 rounded-full hover:bg-pink-100 transition" onclick="window.location.href='login.html'">
+                    <i data-feather="user"></i>
+                </button>
+                <button class="p-2 rounded-full hover:bg-pink-100 transition relative" onclick="window.location.href='carrinho.html'">
+                    <i data-feather="shopping-cart"></i>
+                    <span id="cart-count" class="absolute -top-1 -right-1 bg-pink-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">0</span>
+                </button>
+                
+                <!-- Botão Admin para Mobile -->
+                <button class="md:hidden bg-green-500 hover:bg-green-600 text-white p-2 rounded-full transition" 
+                        onclick="window.location.href='admin.html'">
+                    <i data-feather="settings"></i>
+                </button>
+                
+                <button class="md:hidden p-2 rounded-full hover:bg-pink-100 transition" id="mobile-menu-button">
+                    <i data-feather="menu"></i>
+                </button>
+            </div>
+        </div>
+        
+        <!-- Menu Mobile -->
+        <div class="md:hidden hidden bg-white shadow-lg" id="mobile-menu">
+            <div class="container mx-auto px-4 py-4">
+                <ul class="space-y-3">
+                    <li><a href="index.html" class="block py-2 font-medium text-pink-600">Home</a></li>
+                    <li><a href="produtos.html" class="block py-2 font-medium hover:text-pink-600 transition">Produtos</a></li>
+                    <li><a href="carrinho.html" class="block py-2 font-medium hover:text-pink-600 transition">Carrinho</a></li>
+                    <li><a href="cadastro.html" class="block py-2 font-medium hover:text-pink-600 transition">Cadastro</a></li>
+                    <li><a href="login.html" class="block py-2 font-medium hover:text-pink-600 transition">Login</a></li>
+                    <li>
+                        <button onclick="window.location.href='admin.html'" 
+                                class="w-full bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg font-medium transition shadow-md flex items-center justify-center">
+                            <i data-feather="settings" class="w-4 h-4 mr-2"></i>
+                            Painel Admin
+                        </button>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Banner -->
+    <section class="gradient-bg py-16 md:py-24">
+        <div class="container mx-auto px-4 flex flex-col md:flex-row items-center">
+            <div class="md:w-1/2 mb-10 md:mb-0">
+                <h2 class="text-4xl md:text-5xl font-bold text-gray-800 mb-6">Presentes que <span class="text-pink-500">encantam</span> corações</h2>
+                <p class="text-lg text-gray-600 mb-8">Encontre o presente perfeito para quem você ama. Presentes especiais para momentos inesquecíveis.</p>
+                <div class="flex space-x-4">
+                    <button class="bg-pink-500 hover:bg-pink-600 text-white px-6 py-3 rounded-lg font-medium transition shadow-md" onclick="window.location.href='produtos.html'">Comprar Agora</button>
+                    <button class="border border-pink-500 text-pink-500 hover:bg-pink-50 px-6 py-3 rounded-lg font-medium transition" onclick="window.location.href='produtos.html'">Ver Catálogo</button>
+                </div>
+            </div>
+            <div class="md:w-1/2 flex justify-center">
+                <div class="w-full max-w-md h-64 bg-gradient-to-r from-pink-200 to-blue-200 rounded-lg shadow-xl flex items-center justify-center">
+                    <i data-feather="gift" class="w-24 h-24 text-pink-500"></i>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Featured Categories -->
+    <section class="py-12 bg-white">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl font-bold text-center mb-12">Nossas Categorias</h2>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+                <div class="category-card bg-pink-50 rounded-xl p-6 text-center hover:shadow-lg transition cursor-pointer" onclick="window.location.href='produtos.html?categoria=flores'">
+                    <div class="w-16 h-16 bg-pink-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i data-feather="flower" class="text-pink-500"></i>
+                    </div>
+                    <h3 class="font-semibold text-lg">Flores</h3>
+                    <p class="text-gray-500 text-sm mt-1">Buquês lindos</p>
+                </div>
+                <div class="category-card bg-blue-50 rounded-xl p-6 text-center hover:shadow-lg transition cursor-pointer" onclick="window.location.href='produtos.html?categoria=cafe'">
+                    <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i data-feather="coffee" class="text-blue-500"></i>
+                    </div>
+                    <h3 class="font-semibold text-lg">Café</h3>
+                    <p class="text-gray-500 text-sm mt-1">Kits especiais</p>
+                </div>
+                <div class="category-card bg-yellow-50 rounded-xl p-6 text-center hover:shadow-lg transition cursor-pointer" onclick="window.location.href='produtos.html?categoria=chocolates'">
+                    <div class="w-16 h-16 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i data-feather="box" class="text-yellow-500"></i>
+                    </div>
+                    <h3 class="font-semibold text-lg">Chocolates</h3>
+                    <p class="text-gray-500 text-sm mt-1">Delícias doces</p>
+                </div>
+                <div class="category-card bg-green-50 rounded-xl p-6 text-center hover:shadow-lg transition cursor-pointer" onclick="window.location.href='produtos.html?categoria=romanticos'">
+                    <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i data-feather="heart" class="text-green-500"></i>
+                    </div>
+                    <h3 class="font-semibold text-lg">Românticos</h3>
+                    <p class="text-gray-500 text-sm mt-1">Para casais</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Featured Products -->
+    <section class="py-16 bg-gray-50">
+        <div class="container mx-auto px-4">
+            <div class="flex justify-between items-center mb-12">
+                <h2 class="text-3xl font-bold">Produtos em Destaque</h2>
+                <a href="produtos.html" class="text-pink-500 hover:text-pink-600 font-medium flex items-center">
+                    Ver todos <i data-feather="chevron-right" class="ml-1"></i>
+                </a>
+            </div>
+            
+            <div id="featured-products" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+                <!-- Produtos serão carregados via JavaScript -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials -->
+    <section class="py-16 bg-white">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl font-bold text-center mb-12">O que nossos clientes dizem</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="bg-gray-50 rounded-xl p-6 shadow-sm">
+                    <div class="flex items-center mb-4">
+                        <div class="w-12 h-12 rounded-full bg-pink-100 flex items-center justify-center mr-4">
+                            <span class="font-bold text-pink-600">A</span>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold">Ana Silva</h4>
+                            <div class="flex text-yellow-400">
+                                <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                                <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                                <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                                <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                                <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="text-gray-600">"Adorei o buquê que comprei para minha mãe! Chegou fresquinho e lindo, exatamente como na foto. Ela amou!"</p>
+                </div>
+                
+                <div class="bg-gray-50 rounded-xl p-6 shadow-sm">
+                    <div class="flex items-center mb-4">
+                        <div class="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center mr-4">
+                            <span class="font-bold text-blue-600">C</span>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold">Carlos Mendes</h4>
+                            <div class="flex text-yellow-400">
+                                <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                                <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                                <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                                <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                                <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="text-gray-600">"Presenteio minha namorada todo mês com algo da Graça Presentes. Sempre acertam nas opções românticas!"</p>
+                </div>
+                
+                <div class="bg-gray-50 rounded-xl p-6 shadow-sm">
+                    <div class="flex items-center mb-4">
+                        <div class="w-12 h-12 rounded-full bg-green-100 flex items-center justify-center mr-4">
+                            <span class="font-bold text-green-600">J</span>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold">Juliana Costa</h4>
+                            <div class="flex text-yellow-400">
+                                <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                                <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                                <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                                <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                                <i data-feather="star" class="w-4 h-4"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="text-gray-600">"Comprei o kit de café para presentear meu chefe. A embalagem estava linda e os produtos eram de alta qualidade."</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Newsletter -->
+    <section class="py-16 bg-pink-50">
+        <div class="container mx-auto px-4 text-center">
+            <h2 class="text-3xl font-bold mb-4">Receba nossas ofertas</h2>
+            <p class="text-gray-600 max-w-2xl mx-auto mb-8">Assine nossa newsletter e receba descontos exclusivos e novidades em primeira mão!</p>
+            <form class="max-w-md mx-auto flex" onsubmit="assinarNewsletter(event)">
+                <input type="email" id="newsletter-email" placeholder="Seu melhor e-mail" class="flex-grow px-4 py-3 rounded-l-lg border border-r-0 border-gray-300 focus:outline-none focus:ring-2 focus:ring-pink-300 focus:border-transparent" required>
+                <button type="submit" class="bg-pink-500 hover:bg-pink-600 text-white px-6 py-3 rounded-r-lg font-medium transition">Assinar</button>
+            </form>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-12">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div>
+                    <div class="flex items-center mb-4">
+                        <div class="w-10 h-10 rounded-full bg-pink-500 flex items-center justify-center mr-3">
+                            <i data-feather="gift" class="text-white"></i>
+                        </div>
+                        <h3 class="text-xl font-bold">Graça Presentes</h3>
+                    </div>
+                    <p class="text-gray-300">Presentes especiais para momentos inesquecíveis desde 2010.</p>
+                    <div class="flex space-x-4 mt-4">
+                        <a href="#" class="text-gray-300 hover:text-white transition"><i data-feather="facebook"></i></a>
+                        <a href="#" class="text-gray-300 hover:text-white transition"><i data-feather="instagram"></i></a>
+                        <a href="#" class="text-gray-300 hover:text-white transition"><i data-feather="twitter"></i></a>
+                    </div>
+                </div>
+                
+                <div>
+                    <h4 class="font-bold text-lg mb-4">Links Úteis</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-300 hover:text-white transition">Sobre Nós</a></li>
+                        <li><a href="#" class="text-gray-300 hover:text-white transition">Blog</a></li>
+                        <li><a href="#" class="text-gray-300 hover:text-white transition">Termos de Serviço</a></li>
+                        <li><a href="#" class="text-gray-300 hover:text-white transition">Política de Privacidade</a></li>
+                        <li><a href="#" class="text-gray-300 hover:text-white transition">Trocas e Devoluções</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="font-bold text-lg mb-4">Minha Conta</h4>
+                    <ul class="space-y-2">
+                        <li><a href="cadastro.html" class="text-gray-300 hover:text-white transition">Minha Conta</a></li>
+                        <li><a href="#" class="text-gray-300 hover:text-white transition">Meus Pedidos</a></li>
+                        <li><a href="#" class="text-gray-300 hover:text-white transition">Lista de Desejos</a></li>
+                        <li><a href="#" class="text-gray-300 hover:text-white transition">Newsletter</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="font-bold text-lg mb-4">Contato</h4>
+                    <ul class="space-y-2">
+                        <li class="flex items-center">
+                            <i data-feather="map-pin" class="mr-2 w-4 h-4"></i>
+                            <span class="text-gray-300">Rua das Flores, 123 - São Paulo/SP</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i data-feather="phone" class="mr-2 w-4 h-4"></i>
+                            <span class="text-gray-300">(11) 9876-5432</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i data-feather="mail" class="mr-2 w-4 h-4"></i>
+                            <span class="text-gray-300">contato@gracapresentes.com.br</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-700 mt-12 pt-8 text-center text-gray-400">
+                <p>&copy; 2024 Graça Presentes. Todos os direitos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/app.js"></script>
+    <script>
+        // Carregar produtos em destaque
+        document.addEventListener('DOMContentLoaded', function() {
+            carregarProdutosDestaque();
+            atualizarContadorCarrinho();
+            inicializarMenuMobile();
+            feather.replace();
+        });
+
+        function inicializarMenuMobile() {
+            const menuButton = document.getElementById('mobile-menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+            
+            if (menuButton && mobileMenu) {
+                menuButton.addEventListener('click', function() {
+                    mobileMenu.classList.toggle('hidden');
+                });
+            }
+        }
+
+        async function carregarProdutosDestaque() {
+            try {
+                const response = await fetch('/api/produtos');
+                const produtos = await response.json();
+                const container = document.getElementById('featured-products');
+                
+                // Pegar produtos em destaque (os primeiros 4)
+                const produtosDestaque = produtos.slice(0, 4);
+                
+                container.innerHTML = produtosDestaque.map(produto => `
+                    <div class="product-card bg-white rounded-xl overflow-hidden shadow-md transition duration-300 hover:shadow-lg">
+                        <div class="relative">
+                            ${produto.imagem_url ? 
+                                `<img src="${produto.imagem_url}" alt="${produto.nome}" class="w-full h-48 object-cover">` :
+                                `<div class="w-full h-48 bg-gradient-to-br ${produto.corGradiente} flex items-center justify-center">
+                                    <i data-feather="${produto.icone}" class="w-16 h-16 text-white"></i>
+                                </div>`
+                            }
+                            ${produto.desconto ? `<div class="absolute top-3 right-3 bg-pink-500 text-white text-xs px-2 py-1 rounded-full">-${produto.desconto}%</div>` : ''}
+                            ${produto.novo ? `<div class="absolute top-3 left-3 bg-green-500 text-white text-xs px-2 py-1 rounded-full">Novo</div>` : ''}
+                            ${produto.maisVendido ? `<div class="absolute top-3 left-3 bg-orange-500 text-white text-xs px-2 py-1 rounded-full">🔥</div>` : ''}
+                        </div>
+                        <div class="p-4">
+                            <div class="flex justify-between items-start mb-2">
+                                <h3 class="font-semibold text-lg">${produto.nome}</h3>
+                                <span class="bg-${produto.cor}-100 text-${produto.cor}-600 text-xs px-2 py-1 rounded">${produto.categoria}</span>
+                            </div>
+                            <p class="text-gray-500 text-sm mb-4 line-clamp-2">${produto.descricao}</p>
+                            <div class="flex justify-between items-center">
+                                <div>
+                                    <span class="font-bold text-lg text-pink-500">R$ ${produto.preco.toFixed(2).replace('.', ',')}</span>
+                                    ${produto.precoOriginal ? `<span class="block text-xs text-gray-400 line-through">R$ ${produto.precoOriginal.toFixed(2).replace('.', ',')}</span>` : ''}
+                                </div>
+                                <button class="bg-pink-500 hover:bg-pink-600 text-white p-2 rounded-full transition add-to-cart" data-produto-id="${produto.id}">
+                                    <i data-feather="plus"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+                
+                feather.replace();
+                
+                // Adicionar eventos aos botões do carrinho
+                document.querySelectorAll('.add-to-cart').forEach(button => {
+                    button.addEventListener('click', function() {
+                        const produtoId = parseInt(this.getAttribute('data-produto-id'));
+                        const produto = produtos.find(p => p.id === produtoId);
+                        if (produto) {
+                            adicionarAoCarrinho(produto);
+                        }
+                    });
+                });
+                
+            } catch (error) {
+                console.error('Erro ao carregar produtos:', error);
+                document.getElementById('featured-products').innerHTML = `
+                    <div class="col-span-full text-center py-8">
+                        <p class="text-gray-500">Erro ao carregar produtos. Tente novamente.</p>
+                    </div>
+                `;
+            }
+        }
+
+        function adicionarAoCarrinho(produto) {
+            let carrinho = JSON.parse(localStorage.getItem('carrinho')) || [];
+            const itemExistente = carrinho.find(item => item.id === produto.id);
+            
+            if (itemExistente) {
+                itemExistente.quantidade += 1;
+            } else {
+                carrinho.push({
+                    id: produto.id,
+                    nome: produto.nome,
+                    preco: produto.preco,
+                    quantidade: 1,
+                    imagem_url: produto.imagem_url,
+                    icone: produto.icone
+                });
+            }
+            
+            localStorage.setItem('carrinho', JSON.stringify(carrinho));
+            atualizarContadorCarrinho();
+            
+            // Feedback visual
+            const button = event.target.closest('button');
+            const originalHTML = button.innerHTML;
+            button.innerHTML = '<i data-feather="check" class="w-4 h-4"></i>';
+            button.classList.add('bg-green-500');
+            feather.replace();
+            
+            setTimeout(() => {
+                button.innerHTML = originalHTML;
+                button.classList.remove('bg-green-500');
+                feather.replace();
+            }, 1000);
+        }
+
+        function atualizarContadorCarrinho() {
+            const carrinho = JSON.parse(localStorage.getItem('carrinho')) || [];
+            const totalItens = carrinho.reduce((total, item) => total + item.quantidade, 0);
+            document.getElementById('cart-count').textContent = totalItens;
+        }
+
+        function assinarNewsletter(event) {
+            event.preventDefault();
+            const email = document.getElementById('newsletter-email').value;
+            alert(`Obrigado por assinar nossa newsletter! Enviaremos novidades para: ${email}`);
+            document.getElementById('newsletter-email').value = '';
+        }
+    </script>
+</body>
+</html>
